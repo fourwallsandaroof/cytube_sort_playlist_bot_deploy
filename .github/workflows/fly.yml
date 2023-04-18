@@ -1,0 +1,21 @@
+name: Deploy Bot
+on: workflow_dispatch
+
+jobs:
+  deploy:
+    name: deploy bot to fly.io
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout bot repository
+        uses: actions/checkout@v3
+        with:
+          repository: fourwallsandaroof/cytube-playlist-sort-bot
+      - name: Load flyctl 
+        uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Validate secrets and environment variables before deploy
+        run: python validate.py
+      - name: Peform deployment
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          
